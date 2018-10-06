@@ -5,6 +5,7 @@ public abstract class Pieces {
     private int y;
     String type;
 
+
     public abstract void move();
 
 }
