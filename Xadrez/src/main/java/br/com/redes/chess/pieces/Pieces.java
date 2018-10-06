@@ -1,6 +1,10 @@
 package br.com.redes.chess.pieces;
 
-public interface Pieces {
-    void move(String position);
+public abstract class Pieces {
+    private int x;
+    private int y;
+    String type;
+
+    public abstract void move();
 
 }
