@@ -43,14 +43,11 @@ public class Board {
         }
     }
 
-    //TODO remover
-    public static void main(String[] args) {
-        Board b = new Board();
-        for (int i = 0; i < 8; i++) {
+    public void copy(Board visibleBoard) {
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 8; j++) {
-                System.out.print(b.board[i][j] + " ");
+                visibleBoard.board[i][j] = this.board[i][j];
             }
-            System.out.println();
         }
     }
 }
