@@ -1,13 +1,17 @@
 package br.com.checkers.board;
 
+import br.com.checkers.utils.MoveList;
+
 public class Board {
     private static final Integer EMPTY = 0;
     private static final Integer INITIAL_POSITION = 1;
     private static final Integer RED_INITIAL_POSITION = 2;
     private static final Integer CANNOT_GO = -1;
     private Integer board[][];
+    private MoveList moves;
 
     public Board() {
+        moves = new MoveList();
         board = new Integer[8][];
 
         for (int i = 0; i < 8; i++) {
@@ -47,6 +51,10 @@ public class Board {
 
     public Integer[][] getBoard() {
         return board;
+    }
+
+    public MoveList getMoves() {
+        return moves;
     }
 
     public void copy(Board visibleBoard) {
