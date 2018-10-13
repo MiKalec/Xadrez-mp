@@ -1,4 +1,4 @@
-package checker2;/* Matthew Proetsch
+package br.com.checker2;/* Matthew Proetsch
  * COP3330 Section 0001
  * Square.java: See Javadoc comment for details
  */

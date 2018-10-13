@@ -1,83 +1,45 @@
-package checker2;/* Matthew Proetsch
- * COP3330 Section 0001
- * SimpleCheckersGUI.java (see Javadoc comment for details)
- */
+package br.com.checker2;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-/** Creates a new instance of Board and draws a necessary graphical interface
- *  for the user to select possible moves. Provides options to exit and to start a new game
- *  in the form of a menubar at the top of the window
- * 
- * 
- * @author Matthew Proetsch
- * @version 0.9b
- */
-
 
 public class SimpleCheckersGUI implements MouseListener,
 									ActionListener {
 	
-	/** The frame that will serve to holds the contents of our game */
 	private JFrame frame;
 	
-	/** The panel that will hold our Board */
 	private JPanel boardpanel;
 	
-	/** The label that will keep track of remaining pieces for each side */
 	private JLabel piecesLabel;
 	
-	/** Menubar containing Exit and New Game options */
 	private JMenuBar menubar;
 	
-	/** File menu */
 	private JMenu fileMenu;
 	
-	/** New Game menu item */
 	private JMenuItem newGame;
 	
-	/** Exit menu item */
 	private JMenuItem exit;
 	
-	/** Keep track of the current turn */
 	private Color currentTurn;
 	
-	/** Border width between squares in the game board */
 	private final int borderWidth = 1;
 	
-	/** The board which will store our game's state */
 	private Board board;
 	
-	/** The number of checkers remaining for Black side */
 	private int blackCheckersLeft;
 	
-	/** The number of checkers remaining for Red side */
 	private int redCheckersLeft;
 
-	/** Hold a reference to the currently selected Piece */
 	private Square selectedSquare;
 	
 	
 	
-	/** Constructor takes no arguments and forms a new game */
 	public SimpleCheckersGUI() {
 		
 		//display the interface
@@ -96,7 +58,6 @@ public class SimpleCheckersGUI implements MouseListener,
 		//event-driven onward
 	}
 	
-	/** Set up the visual interface to the game */
 	public void CreateAndShowGUI() {
 		
 		//Set up the window information
@@ -301,7 +262,6 @@ public class SimpleCheckersGUI implements MouseListener,
 	
 	
 	@Override
-	/** Perform the appropriate action when a menu item is clicked */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == newGame) {
 			restartGame();
@@ -313,11 +273,6 @@ public class SimpleCheckersGUI implements MouseListener,
 		
 	}
 	
-	/** Add the Board to a Panel to create the appearance of a checkerboard
-	 * 
-	 * @param b						The Board to add to a JPanel 
-	 * @param p						the JPanel to be added to
-	 */
 	public void addBoardToPanel(Board b, JPanel p) {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
@@ -339,16 +294,11 @@ public class SimpleCheckersGUI implements MouseListener,
 	
 	
 	
-	/** Update the text of piecesLeft to a string representation of the number of pieces left for both sides */
 	public void updateStatus() {
 		piecesLabel.setText("Red pieces left: " + redCheckersLeft + "             Black pieces left: " + blackCheckersLeft);
 	}
 	
 	
-	/** Find out, if the game is over, who won and how that side won
-	 * 
-	 * @return 				A String containing the side which won, as well as how they won (took other side's pieces, other side could make no more moves)
-	 */
 	public String winner() {
 		
 		//Check first ending condition: one side loses all pieces
@@ -399,7 +349,6 @@ public class SimpleCheckersGUI implements MouseListener,
 	}
 	
 	
-	/** Switch turns at the end of the current player's turn */
 	public void endTurn() {
 		if(currentTurn == Color.BLACK) {
 			currentTurn = Color.RED;
@@ -409,7 +358,6 @@ public class SimpleCheckersGUI implements MouseListener,
 		}
 	}
 	
-	/** End the game and start anew by resetting everything */
 	public void restartGame() {
 		
 		frame.setVisible(false);
@@ -437,7 +385,6 @@ public class SimpleCheckersGUI implements MouseListener,
 	}
 	
 	
-	/** Instantiate this class to set the wheels of progress in beautiful event-driven motion */
 	public static void main(String[] args) {
 		new SimpleCheckersGUI();
 	}
