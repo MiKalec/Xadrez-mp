@@ -3,6 +3,7 @@ package br.com.chatmultithread;
 import br.com.chatmultithread.UI.ServerUI;
 
 import java.io.DataInputStream;
+import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -75,6 +76,7 @@ class clientThread extends Thread {
 
     private DataInputStream is = null;
     private PrintStream os = null;
+    private ObjectInputStream ois;
     private Socket clientSocket = null;
     private final clientThread[] threads;
     private int maxClientsCount;
@@ -95,8 +97,9 @@ class clientThread extends Thread {
              */
             is = new DataInputStream(clientSocket.getInputStream());
             os = new PrintStream(clientSocket.getOutputStream());
+            ois = new ObjectInputStream(clientSocket.getInputStream());
             os.println("Enter your name.");
-            String name = is.readLine().trim();
+            String name = (String) ois.readObject();
             os.println("Hello " + name
                     + " to our chat room.\nTo leave enter /quit in a new line");
             for (int i = 0; i < maxClientsCount; i++) {
@@ -112,7 +115,7 @@ class clientThread extends Thread {
                 }
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null) {
-                        threads[i].os.println("<" + name + "&gr; " + line);
+                        threads[i].os.println("<" + name + "> " + line);
                     }
                 }
             }
@@ -141,6 +144,8 @@ class clientThread extends Thread {
             os.close();
             clientSocket.close();
         } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

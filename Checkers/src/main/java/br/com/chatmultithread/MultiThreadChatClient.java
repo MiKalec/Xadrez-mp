@@ -3,6 +3,7 @@ package br.com.chatmultithread;
 import br.com.chatmultithread.UI.ChatUI;
 
 import java.io.DataInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,6 +19,8 @@ public class MultiThreadChatClient implements Runnable {
     private static PrintStream os = null;
     // The input stream
     private static DataInputStream is = null;
+
+    private static ObjectOutputStream oos;
 
     private static BufferedReader inputLine = null;
     private static boolean closed = false;
@@ -46,6 +49,8 @@ public class MultiThreadChatClient implements Runnable {
             inputLine = new BufferedReader(new InputStreamReader(System.in));
             os = new PrintStream(clientSocket.getOutputStream());
             is = new DataInputStream(clientSocket.getInputStream());
+            oos = new ObjectOutputStream(clientSocket.getOutputStream());
+            oos.writeObject(ui.getTxtNome().getText());
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + host);
         } catch (IOException e) {
