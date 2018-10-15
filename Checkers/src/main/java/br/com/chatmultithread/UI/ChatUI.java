@@ -90,4 +90,16 @@ public class ChatUI extends JFrame implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent keyEvent) {
 
     }
+
+    public JTextField getTxtPorta() {
+        return txtPorta;
+    }
+
+    public JTextField getTxtIP() {
+        return txtIP;
+    }
+
+    public JTextField getTxtNome() {
+        return txtNome;
+    }
 }

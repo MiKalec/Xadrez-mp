@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class MultiThreadChatClient implements Runnable {
-
+    private String name;
     // The client socket
     private static Socket clientSocket = null;
     // The output stream
@@ -25,9 +25,9 @@ public class MultiThreadChatClient implements Runnable {
     public static void main(String[] args) {
         ChatUI ui = new ChatUI();
         // The default port.
-        int portNumber = 2222;
+        int portNumber = Integer.parseInt(ui.getTxtPorta().getText());
         // The default host.
-        String host = "localhost";
+        String host = ui.getTxtIP().getText();
 
         if (args.length < 2) {
             System.out

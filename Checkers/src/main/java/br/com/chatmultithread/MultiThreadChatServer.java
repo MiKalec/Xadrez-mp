@@ -1,5 +1,7 @@
 package br.com.chatmultithread;
 
+import br.com.chatmultithread.UI.ServerUI;
+
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.io.IOException;
@@ -21,9 +23,9 @@ public class MultiThreadChatServer {
     private static final clientThread[] threads = new clientThread[maxClientsCount];
 
     public static void main(String args[]) {
-
+        ServerUI ui = new ServerUI();
         // The default port number.
-        int portNumber = 2222;
+        int portNumber = Integer.parseInt(ui.getTxtPorta().getText());
         if (args.length < 1) {
             System.out
                     .println("Usage: java MultiThreadChatServer <portNumber>\n"
