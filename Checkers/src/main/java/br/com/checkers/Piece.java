@@ -1,4 +1,4 @@
-package br.com.checker2;
+package br.com.checkers;
 import java.awt.*;
 
 

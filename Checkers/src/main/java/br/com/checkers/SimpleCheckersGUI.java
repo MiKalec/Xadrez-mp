@@ -1,4 +1,7 @@
-package br.com.checker2;
+package br.com.checkers;
+
+import br.com.Server;
+import br.com.chatServer.client.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,18 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Vector;
 
 
-public class SimpleCheckersGUI implements MouseListener,
-									ActionListener {
-	
+public class SimpleCheckersGUI implements MouseListener, ActionListener {
 	private JFrame frame;
 	
 	private JPanel boardpanel;
 	
 	private JLabel piecesLabel;
-	
+
 	private JMenuBar menubar;
 	
 	private JMenu fileMenu;
@@ -37,11 +39,9 @@ public class SimpleCheckersGUI implements MouseListener,
 	private int redCheckersLeft;
 
 	private Square selectedSquare;
-	
-	
-	
-	public SimpleCheckersGUI() {
-		
+
+	public SimpleCheckersGUI() throws IOException {
+
 		//display the interface
 		CreateAndShowGUI();
 		
@@ -61,7 +61,7 @@ public class SimpleCheckersGUI implements MouseListener,
 	public void CreateAndShowGUI() {
 		
 		//Set up the window information
-		frame = new JFrame("SimpleCheckersGUI - Matthew Proetsch");
+		frame = new JFrame("Checkers");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout());
 		
@@ -79,7 +79,7 @@ public class SimpleCheckersGUI implements MouseListener,
 		piecesLabel = new JLabel(" ");
 		piecesLabel.setHorizontalTextPosition(JLabel.LEFT);
 		piecesLabel.setVerticalTextPosition(JLabel.BOTTOM);
-		
+
 		//Add the menubar to the window
 		menubar = new JMenuBar();
 		fileMenu = new JMenu("File");
@@ -238,23 +238,21 @@ public class SimpleCheckersGUI implements MouseListener,
 					}
 						
 				}
+				passToServer(selectedSquare);
 			}
 			
 			else if(!found) 
 				//Tell the user the obvious: that they can't move there.
 				piecesLabel.setText("Can't let you do that, Dave");
 		}
-		
-		
 
-		
-
-		
-
-		
 	}
 
-	//Must implement as per MouseListener
+    private void passToServer(Square selectedSquare) {
+
+    }
+
+    //Must implement as per MouseListener
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
@@ -291,9 +289,7 @@ public class SimpleCheckersGUI implements MouseListener,
 			}
 		}
 	}
-	
-	
-	
+
 	public void updateStatus() {
 		piecesLabel.setText("Red pieces left: " + redCheckersLeft + "             Black pieces left: " + blackCheckersLeft);
 	}
@@ -384,11 +380,10 @@ public class SimpleCheckersGUI implements MouseListener,
 		
 	}
 	
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		new SimpleCheckersGUI();
 	}
 
-	
+
 
 }
