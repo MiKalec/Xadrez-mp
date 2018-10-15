@@ -1,5 +1,7 @@
 package br.com.chatmultithread;
 
+import br.com.chatmultithread.UI.ChatUI;
+
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.io.BufferedReader;
@@ -21,7 +23,7 @@ public class MultiThreadChatClient implements Runnable {
     private static boolean closed = false;
 
     public static void main(String[] args) {
-
+        ChatUI ui = new ChatUI();
         // The default port.
         int portNumber = 2222;
         // The default host.
