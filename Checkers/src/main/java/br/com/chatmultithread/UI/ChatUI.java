@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 public class ChatUI extends JFrame implements ActionListener, KeyListener {
     private static final long serialVersionUID = 1L;
@@ -72,8 +73,16 @@ public class ChatUI extends JFrame implements ActionListener, KeyListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent actionEvent) {
+    public void actionPerformed(ActionEvent e) {
+        /*try {
+            if(e.getActionCommand().equals(buttomSend.getActionCommand()))
 
+            else
+            if(e.getActionCommand().equals(buttomExit.getActionCommand()));
+            exit();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }*/
     }
 
     @Override
@@ -101,5 +110,17 @@ public class ChatUI extends JFrame implements ActionListener, KeyListener {
 
     public JTextField getTxtNome() {
         return txtNome;
+    }
+
+    public JTextField getTxtMsg() {
+        return txtMsg;
+    }
+
+    public JTextArea getTexto() {
+        return texto;
+    }
+
+    public JButton getButtomSend() {
+        return buttomSend;
     }
 }

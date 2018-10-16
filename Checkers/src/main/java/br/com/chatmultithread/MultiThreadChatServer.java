@@ -4,6 +4,7 @@ import br.com.chatmultithread.UI.ServerUI;
 
 import java.io.DataInputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -76,7 +77,8 @@ class clientThread extends Thread {
 
     private DataInputStream is = null;
     private PrintStream os = null;
-    private ObjectInputStream ois;
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
     private Socket clientSocket = null;
     private final clientThread[] threads;
     private int maxClientsCount;
@@ -97,9 +99,11 @@ class clientThread extends Thread {
              */
             is = new DataInputStream(clientSocket.getInputStream());
             os = new PrintStream(clientSocket.getOutputStream());
-            ois = new ObjectInputStream(clientSocket.getInputStream());
+            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             os.println("Enter your name.");
-            String name = (String) ois.readObject();
+            objectOutputStream.writeObject("Enter your name.");
+            String name = (String) objectInputStream.readObject();
             os.println("Hello " + name
                     + " to our chat room.\nTo leave enter /quit in a new line");
             for (int i = 0; i < maxClientsCount; i++) {
@@ -109,13 +113,15 @@ class clientThread extends Thread {
                 }
             }
             while (true) {
-                String line = is.readLine();
+//                String line = is.readLine();
+                String line = (String) objectInputStream.readObject();
                 if (line.startsWith("/quit")) {
                     break;
                 }
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null) {
                         threads[i].os.println("<" + name + "> " + line);
+                        threads[i].objectOutputStream.writeObject("<" + name + "> " + line);
                     }
                 }
             }

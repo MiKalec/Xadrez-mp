@@ -3,6 +3,7 @@ package br.com.chatmultithread;
 import br.com.chatmultithread.UI.ChatUI;
 
 import java.io.DataInputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class MultiThreadChatClient implements Runnable {
+    private static ChatUI ui;
     private String name;
     // The client socket
     private static Socket clientSocket = null;
@@ -20,13 +22,19 @@ public class MultiThreadChatClient implements Runnable {
     // The input stream
     private static DataInputStream is = null;
 
-    private static ObjectOutputStream oos;
+    private static ObjectOutputStream objectOutputStream;
+
+    private static ObjectInputStream objectInputStream;
 
     private static BufferedReader inputLine = null;
     private static boolean closed = false;
 
+    public static ChatUI getUi() {
+        return ui;
+    }
+
     public static void main(String[] args) {
-        ChatUI ui = new ChatUI();
+        ui = new ChatUI();
         // The default port.
         int portNumber = Integer.parseInt(ui.getTxtPorta().getText());
         // The default host.
@@ -49,13 +57,17 @@ public class MultiThreadChatClient implements Runnable {
             inputLine = new BufferedReader(new InputStreamReader(System.in));
             os = new PrintStream(clientSocket.getOutputStream());
             is = new DataInputStream(clientSocket.getInputStream());
-            oos = new ObjectOutputStream(clientSocket.getOutputStream());
-            oos.writeObject(ui.getTxtNome().getText());
+            objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            ui.getTexto().append((String) objectInputStream.readObject());
+            objectOutputStream.writeObject(ui.getTxtNome().getText());
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + host);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to the host "
                     + host);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
         /*
@@ -74,7 +86,9 @@ public class MultiThreadChatClient implements Runnable {
                  * Close the output stream, close the input stream, close the socket.
                  */
                 os.close();
+                objectOutputStream.close();
                 is.close();
+                objectInputStream.close();
                 clientSocket.close();
             } catch (IOException e) {
                 System.err.println("IOException:  " + e);
