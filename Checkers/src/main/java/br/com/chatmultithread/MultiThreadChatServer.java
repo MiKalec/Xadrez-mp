@@ -3,30 +3,27 @@ package br.com.chatmultithread;
 import br.com.chatmultithread.UI.ServerUI;
 
 import java.io.DataInputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.util.Scanner;
 
 /*
  * A chat server that delivers public and private messages.
  */
 public class MultiThreadChatServer {
 
-    // The server socket.
     private static ServerSocket serverSocket = null;
-    // The client socket.
     private static Socket clientSocket = null;
 
-    // This chat server can accept up to maxClientsCount clients' connections.
     private static final int maxClientsCount = 10;
     private static final clientThread[] threads = new clientThread[maxClientsCount];
 
     public static void main(String args[]) {
         ServerUI ui = new ServerUI();
-        // The default port number.
         int portNumber = Integer.parseInt(ui.getTxtPorta().getText());
         if (args.length < 1) {
             System.out
@@ -36,20 +33,12 @@ public class MultiThreadChatServer {
             portNumber = Integer.valueOf(args[0]).intValue();
         }
 
-        /*
-         * Open a server socket on the portNumber (default 2222). Note that we can
-         * not choose a port less than 1023 if we are not privileged users (root).
-         */
         try {
             serverSocket = new ServerSocket(portNumber);
         } catch (IOException e) {
             System.out.println(e);
         }
 
-        /*
-         * Create a client socket for each connection and pass it to a new client
-         * thread.
-         */
         while (true) {
             try {
                 clientSocket = serverSocket.accept();
@@ -75,10 +64,10 @@ public class MultiThreadChatServer {
 
 class clientThread extends Thread {
 
-    private DataInputStream is = null;
-    private PrintStream os = null;
-    private ObjectInputStream objectInputStream;
-    private ObjectOutputStream objectOutputStream;
+    private DataInputStream inputFromClient = null;
+    private PrintStream outputToClient = null;
+    private InputStream inputFromUI = null;
+    private OutputStream outputToUI = null;
     private Socket clientSocket = null;
     private final clientThread[] threads;
     private int maxClientsCount;
@@ -94,64 +83,61 @@ class clientThread extends Thread {
         clientThread[] threads = this.threads;
 
         try {
-            /*
-             * Create input and output streams for this client.
-             */
-            is = new DataInputStream(clientSocket.getInputStream());
-            os = new PrintStream(clientSocket.getOutputStream());
-            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
-            objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-            os.println("Enter your name.");
-            objectOutputStream.writeObject("Enter your name.");
-            String name = (String) objectInputStream.readObject();
-            os.println("Hello " + name
+            inputFromClient = new DataInputStream(clientSocket.getInputStream());
+            outputToClient = new PrintStream(clientSocket.getOutputStream());
+            inputFromUI = clientSocket.getInputStream();
+            outputToUI = clientSocket.getOutputStream();
+
+            outputToClient.println("Enter your name.");
+            outputToUI.write("Enter your name.".getBytes());
+
+            String name = inputFromClient.readLine().trim();
+            outputToClient.println("Hello " + name
                     + " to our chat room.\nTo leave enter /quit in a new line");
+            outputToUI.write(("Hello " + name
+                    + " to our chat room.\nTo leave enter /quit in a new line").getBytes());
+
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
-                    threads[i].os.println("*** A new user " + name
+                    threads[i].outputToClient.println("*** A new user " + name
                             + " entered the chat room !!! ***");
                 }
             }
             while (true) {
-//                String line = is.readLine();
-                String line = (String) objectInputStream.readObject();
+                String line = inputFromClient.readLine();
+                Scanner scan = new Scanner(inputFromUI);
+                String scanLine = scan.nextLine();
                 if (line.startsWith("/quit")) {
                     break;
                 }
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null) {
-                        threads[i].os.println("<" + name + "> " + line);
-                        threads[i].objectOutputStream.writeObject("<" + name + "> " + line);
+                        threads[i].outputToClient.println("<" + name + "> " + line);
+                        threads[i].outputToUI.write(("<" + name + "> " + scanLine).getBytes());
                     }
                 }
             }
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
-                    threads[i].os.println("*** The user " + name
-                            + " is leaving the chat room !!! ***");
+                    threads[i].outputToClient.println("*** The user " + name
+                            + " inputFromClient leaving the chat room !!! ***");
+                    threads[i].outputToUI.write(("*** The user " + name
+                            + " inputFromClient leaving the chat room !!! ***").getBytes());
                 }
             }
-            os.println("*** Bye " + name + " ***");
+            outputToClient.println("*** Bye " + name + " ***");
+            outputToUI.write(("*** Bye " + name + " ***").getBytes());
 
-            /*
-             * Clean up. Set the current thread variable to null so that a new client
-             * could be accepted by the server.
-             */
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] == this) {
                     threads[i] = null;
                 }
             }
 
-            /*
-             * Close the output stream, close the input stream, close the socket.
-             */
-            is.close();
-            os.close();
+            inputFromClient.close();
+            outputToClient.close();
             clientSocket.close();
         } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 }
