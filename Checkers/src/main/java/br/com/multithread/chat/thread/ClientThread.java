@@ -6,6 +6,13 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
+/*
+ * Implementação baseada no tutorial de Siva Naganjaneyulu Polam
+ * http://makemobiapps.blogspot.com/p/multiple-client-server-chat-programming.html
+ * linhas de código comentadas seriam implementadas,
+ * mas por erros na integração, não foram adiante
+ * */
+
 public class ClientThread extends Thread {
 
     private DataInputStream inputFromClient = null;
@@ -58,7 +65,7 @@ public class ClientThread extends Thread {
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null) {
 //                        threads[i].outputToUI.write(("<" + name + "> " + scanLine + "\n").getBytes());
-                        threads[i].outputToClient.println("<" + name + "> ->" + line);
+                        threads[i].outputToClient.println("<" + name + "> " + line);
                     }
                 }
             }

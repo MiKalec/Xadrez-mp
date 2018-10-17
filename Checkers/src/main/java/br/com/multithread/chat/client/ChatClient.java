@@ -8,21 +8,44 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/*
+ * Implementação baseada no tutorial de Siva Naganjaneyulu Polam
+ * http://makemobiapps.blogspot.com/p/multiple-client-server-chat-programming.html
+ * linhas de código comentadas seriam implementadas,
+ * mas por erros na integração, não foram adiante
+ * */
+
 public class ChatClient implements Runnable {
-    //    private static ChatUI ui;
+//    private static ChatUI ui;
 //    private static Scanner scan;
-    private static Socket clientSocket = null;
-    private static PrintStream outputToServer = null;
-    private static DataInputStream inputFromServer = null;
-    private static BufferedReader inputLine = null;
 //    private static InputStream inputFromAnotherUI = null;
 //    private static OutputStream outputToAnotherUI = null;
+    private static DataInputStream inputFromServer = null;
+    private static BufferedReader inputLine = null;
+    private static PrintStream outputToServer = null;
+
+    private static Socket clientSocket = null;
 
     private static boolean closed = false;
 
     /*public static ChatUI getUi() {
         return ui;
     }*/
+
+    public void run() {
+        String responseLine;
+        try {
+            while ((responseLine = inputFromServer.readLine()) != null) {
+//                  ui.getTexto().append(responseLine + "\n");
+                System.out.println(responseLine);
+                if (responseLine.indexOf("*** Bye") != -1)
+                    break;
+            }
+            closed = true;
+        } catch (IOException e) {
+            System.err.println("IOException:  " + e);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
 //        ui = new ChatUI();
@@ -72,21 +95,6 @@ public class ChatClient implements Runnable {
             } catch (IOException e) {
                 System.err.println("IOException:  " + e);
             }
-        }
-    }
-
-    public void run() {
-        String responseLine;
-        try {
-            while ((responseLine = inputFromServer.readLine()) != null) {
-//                  ui.getTexto().append(responseLine + "\n");
-                System.out.println(responseLine);
-                if (responseLine.indexOf("*** Bye") != -1)
-                    break;
-            }
-            closed = true;
-        } catch (IOException e) {
-            System.err.println("IOException:  " + e);
         }
     }
 }
