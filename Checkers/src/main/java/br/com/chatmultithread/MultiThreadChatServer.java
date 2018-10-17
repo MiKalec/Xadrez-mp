@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /*
@@ -18,6 +20,8 @@ public class MultiThreadChatServer {
 
     private static ServerSocket serverSocket = null;
     private static Socket clientSocket = null;
+    private static InetAddress ip;
+
 
     private static final int maxClientsCount = 10;
     private static final clientThread[] threads = new clientThread[maxClientsCount];
@@ -25,9 +29,16 @@ public class MultiThreadChatServer {
     public static void main(String args[]) {
         ServerUI ui = new ServerUI();
         int portNumber = Integer.parseInt(ui.getTxtPorta().getText());
+        String ipAddress = null;
+        try {
+            ip = InetAddress.getLocalHost();
+            ipAddress = ip.getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         if (args.length < 1) {
             System.out
-                    .println("Usage: java MultiThreadChatServer <portNumber>\n"
+                    .println("Seu ip de conexão é:" + ipAddress + "\n"
                             + "Now using port number=" + portNumber);
         } else {
             portNumber = Integer.valueOf(args[0]).intValue();
@@ -90,20 +101,15 @@ class clientThread extends Thread {
             outputToUI = clientSocket.getOutputStream();
             scan = new Scanner(inputFromUI);
 
-            outputToClient.println("Enter your name.");
-            outputToUI.write("Enter your name.".getBytes());
+//            outputToUI.write("Enter your name.".getBytes());
 
 //            String name = inputFromClient.readLine().trim();
             String name = scan.nextLine();
-            outputToClient.println("Hello " + name
-                    + " to our chat room.\nTo leave enter /quit in a new line");
             outputToUI.write(("Hello " + name
                     + " to our chat room.\nTo leave enter /quit in a new line").getBytes());
 
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
-                    threads[i].outputToClient.println("*** A new user " + name
-                            + " entered the chat room !!! ***");
                     threads[i].outputToUI.write(("*** A new user " + name
                             + " entered the chat room !!! ***" + "\n").getBytes());
                 }
@@ -117,20 +123,16 @@ class clientThread extends Thread {
                 }
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null) {
-                        threads[i].outputToClient.println("<" + name + "> " + line);
                         threads[i].outputToUI.write(("<" + name + "> " + scanLine + "\n").getBytes());
                     }
                 }
             }
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
-                    threads[i].outputToClient.println("*** The user " + name
-                            + " inputFromClient leaving the chat room !!! ***");
                     threads[i].outputToUI.write(("*** The user " + name
                             + " inputFromClient leaving the chat room !!! ***" + "\n").getBytes());
                 }
             }
-            outputToClient.println("*** Bye " + name + " ***");
             outputToUI.write(("*** Bye " + name + " ***" + "\n").getBytes());
 
             for (int i = 0; i < maxClientsCount; i++) {

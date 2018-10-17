@@ -2,6 +2,8 @@ package br.com.chatmultithread;
 
 import br.com.chatmultithread.UI.ChatUI;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,8 +68,16 @@ public class MultiThreadChatClient implements Runnable {
             try {
                 new Thread(new MultiThreadChatClient()).start();
                 while (!closed) {
-                    outputToServer.println(inputLine.readLine().trim());
-                    outputToAnotherUI.write(ui.getTxtMsg().getText().getBytes());
+                    ui.getButtomSend().addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent actionEvent) {
+                            try {
+                                outputToAnotherUI.write((ui.getTxtMsg().getText()+"\n").getBytes());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
                 outputToServer.close();
                 inputFromServer.close();
@@ -83,8 +93,7 @@ public class MultiThreadChatClient implements Runnable {
     public void run() {
         String responseLine;
         while ((responseLine = scan.nextLine()) != null) {
-            System.out.println(responseLine);
-            ui.getTexto().append(responseLine);
+            ui.getTexto().append(responseLine + "\n");
             if (responseLine.indexOf("*** Bye") != -1)
                 break;
         }
