@@ -1,6 +1,10 @@
-package br.com.chatmultithread.UI;
+package br.com.multithread.chat.UI;
 
 import javax.swing.*;
+
+/*
+ * SERIA IMPLEMENTADO
+ * */
 
 public class ServerUI {
     private JLabel lblMessage;

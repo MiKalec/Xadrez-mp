@@ -1,4 +1,4 @@
-package br.com.chatmultithread.UI;
+package br.com.multithread.chat.UI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,7 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
+
+/*
+* SERIA IMPLEMENTADO
+* */
+
+
 
 public class ChatUI extends JFrame implements ActionListener, KeyListener {
     private static final long serialVersionUID = 1L;
@@ -21,7 +26,7 @@ public class ChatUI extends JFrame implements ActionListener, KeyListener {
     private JTextField txtPorta;
     private JTextField txtNome;
 
-    public ChatUI(){
+    public ChatUI() {
         JLabel verify = new JLabel("Informe os dados do Server");
         txtIP = new JTextField("127.0.0.1");
         txtPorta = new JTextField("12345");
