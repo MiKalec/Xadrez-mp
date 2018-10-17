@@ -57,8 +57,7 @@ public class ChatClient implements Runnable {
 
         if (args.length < 2) {
             System.out
-                    .println("Usage: java ChatClient <host> <portNumber>\n"
-                            + "Now using host=" + host + ", portNumber=" + portNumber);
+                    .println("Utilizando host=" + host + ", com a porta=" + portNumber);
         } else {
             host = args[0];
             portNumber = Integer.valueOf(args[1]).intValue();
@@ -74,9 +73,9 @@ public class ChatClient implements Runnable {
 //            outputToAnotherUI.write((ui.getTxtNome().getText() + "\n").getBytes());
 //            scan = new Scanner(inputFromAnotherUI);
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + host);
+            System.err.println("Host não conhecido " + host);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to the host "
+            System.err.println("Não há I/O do host "
                     + host);
         }
         if (clientSocket != null && outputToServer != null && inputFromServer != null) {
