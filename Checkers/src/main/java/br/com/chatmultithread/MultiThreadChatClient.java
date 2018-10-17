@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class MultiThreadChatClient implements Runnable {
     private static ChatUI ui;
-//    private static Scanner scanner;
+    private static Scanner scan;
     private String name;
     // The client socket
     private static Socket clientSocket = null;
@@ -33,11 +33,10 @@ public class MultiThreadChatClient implements Runnable {
         return ui;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ui = new ChatUI();
         int portNumber = Integer.parseInt(ui.getTxtPorta().getText());
         String host = ui.getTxtIP().getText();
-        Scanner scan;
 
         if (args.length < 2) {
             System.out
@@ -55,6 +54,7 @@ public class MultiThreadChatClient implements Runnable {
             inputFromServer = new DataInputStream(clientSocket.getInputStream());
             outputToAnotherUI = clientSocket.getOutputStream();
             inputFromAnotherUI = clientSocket.getInputStream();
+            outputToAnotherUI.write((ui.getTxtNome().getText() + "\n").getBytes());
             scan = new Scanner(inputFromAnotherUI);
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + host);
@@ -82,16 +82,12 @@ public class MultiThreadChatClient implements Runnable {
 
     public void run() {
         String responseLine;
-        try {
-            while ((responseLine = inputFromServer.readLine()) != null) {
-                System.out.println(responseLine);
-                ui.getTexto().append(new String(String.valueOf(inputFromAnotherUI.read())));
-                if (responseLine.indexOf("*** Bye") != -1)
-                    break;
-            }
-            closed = true;
-        } catch (IOException e) {
-            System.err.println("IOException:  " + e);
+        while ((responseLine = scan.nextLine()) != null) {
+            System.out.println(responseLine);
+            ui.getTexto().append(responseLine);
+            if (responseLine.indexOf("*** Bye") != -1)
+                break;
         }
+        closed = true;
     }
 }

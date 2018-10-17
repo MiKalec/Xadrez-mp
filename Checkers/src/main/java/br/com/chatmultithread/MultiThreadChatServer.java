@@ -71,6 +71,7 @@ class clientThread extends Thread {
     private Socket clientSocket = null;
     private final clientThread[] threads;
     private int maxClientsCount;
+    private Scanner scan = null;
 
     public clientThread(Socket clientSocket, clientThread[] threads) {
         this.clientSocket = clientSocket;
@@ -87,11 +88,13 @@ class clientThread extends Thread {
             outputToClient = new PrintStream(clientSocket.getOutputStream());
             inputFromUI = clientSocket.getInputStream();
             outputToUI = clientSocket.getOutputStream();
+            scan = new Scanner(inputFromUI);
 
             outputToClient.println("Enter your name.");
             outputToUI.write("Enter your name.".getBytes());
 
-            String name = inputFromClient.readLine().trim();
+//            String name = inputFromClient.readLine().trim();
+            String name = scan.nextLine();
             outputToClient.println("Hello " + name
                     + " to our chat room.\nTo leave enter /quit in a new line");
             outputToUI.write(("Hello " + name
@@ -101,11 +104,13 @@ class clientThread extends Thread {
                 if (threads[i] != null && threads[i] != this) {
                     threads[i].outputToClient.println("*** A new user " + name
                             + " entered the chat room !!! ***");
+                    threads[i].outputToUI.write(("*** A new user " + name
+                            + " entered the chat room !!! ***" + "\n").getBytes());
                 }
             }
             while (true) {
                 String line = inputFromClient.readLine();
-                Scanner scan = new Scanner(inputFromUI);
+                scan = new Scanner(inputFromUI);
                 String scanLine = scan.nextLine();
                 if (line.startsWith("/quit")) {
                     break;
@@ -113,7 +118,7 @@ class clientThread extends Thread {
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null) {
                         threads[i].outputToClient.println("<" + name + "> " + line);
-                        threads[i].outputToUI.write(("<" + name + "> " + scanLine).getBytes());
+                        threads[i].outputToUI.write(("<" + name + "> " + scanLine + "\n").getBytes());
                     }
                 }
             }
@@ -122,11 +127,11 @@ class clientThread extends Thread {
                     threads[i].outputToClient.println("*** The user " + name
                             + " inputFromClient leaving the chat room !!! ***");
                     threads[i].outputToUI.write(("*** The user " + name
-                            + " inputFromClient leaving the chat room !!! ***").getBytes());
+                            + " inputFromClient leaving the chat room !!! ***" + "\n").getBytes());
                 }
             }
             outputToClient.println("*** Bye " + name + " ***");
-            outputToUI.write(("*** Bye " + name + " ***").getBytes());
+            outputToUI.write(("*** Bye " + name + " ***" + "\n").getBytes());
 
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] == this) {
